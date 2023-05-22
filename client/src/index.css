@@ -7,3 +7,10 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 }
+
+@font-face {
+  font-family: "Wanderlust";
+  src: local("Wanderlust"),
+    url("./fonts/Wanderlust/Wanderlust.ttf") format("truetype");
+  font-weight: bold;
+}

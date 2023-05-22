@@ -4,7 +4,7 @@ var path = require("path");
 var logger = require("morgan");
 var cors = require("cors");
 
-var apiRouter = require("./routes/api");
+var tripsRouter = require("./routes/trips");
 
 var app = express();
 
@@ -20,7 +20,7 @@ app.get("/", function(req, res, next) {
   res.send("Access the API at path /api");
 });
 
-app.use("/api", apiRouter);
+app.use("/api", tripsRouter);
 
 // Anything that doesn't match the above, send back index.html
 app.get("*", (req, res) => {
