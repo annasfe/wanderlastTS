@@ -5,17 +5,27 @@ h1 {
 
 .imgGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 30px;
 }
 
 .card-img-top {
   width: 100%;
-  height: 40vh;
+  height: 20vh;
   object-fit: cover;
 }
 
 .icons {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+}
+
+.icons-buttons {
+  display: flex;
+  justify-content: right;
+}
+
+.icons button {
+  margin-left: 5px;
 }
