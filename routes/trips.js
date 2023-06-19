@@ -25,13 +25,6 @@ router.get("/trips", (req, res) => {
   sendUpdatedResults(req, res);
 });
 
-/* SELECT a.*, b.*, a.id AS authorId, b.id AS bookId
-FROM authors AS a
-LEFT JOIN books_authors AS ba ON a.id = ba.authorId
-LEFT JOIN books AS b ON ba.bookId = b.id
-WHERE a.id = ${author.id}
-`;*/
-
 router.get("/trips/:id", (req, res) => {
   db(
     `SELECT t.*, h.*, t.id AS tripID, h.id AS hotelID FROM trips AS t LEFT JOIN hotels as h ON t.id = h.trip_id WHERE t.id = ${req.params.id};`
