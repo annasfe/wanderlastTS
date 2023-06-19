@@ -143,12 +143,12 @@ export default function Form({ updateTripStateCb }) {
                     className="form-check-input"
                     type="radio"
                     id="radio3"
-                    value="niki"
+                    value="girls"
                     name="withwho"
                     onChange={e => handleChange(e)}
                   />
                   <label className="form-check-label" htmlFor="radio3">
-                    Niki
+                    girl-time
                   </label>
                 </div>
                 <div className="form-check form-check-inline">
@@ -156,24 +156,11 @@ export default function Form({ updateTripStateCb }) {
                     className="form-check-input"
                     type="radio"
                     id="radio4"
-                    value="alone"
-                    name="withwho"
-                    onChange={e => handleChange(e)}
-                  />
-                  <label className="form-check-label" htmlFor="radio4">
-                    alone!
-                  </label>
-                </div>
-                <div className="form-check form-check-inline">
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    id="radio5"
                     value="other"
                     name="withwho"
                     onChange={e => handleChange(e)}
                   />
-                  <label className="form-check-label" htmlFor="radio5">
+                  <label className="form-check-label" htmlFor="radio4">
                     other
                   </label>
                 </div>
@@ -200,7 +187,7 @@ export default function Form({ updateTripStateCb }) {
       <div className="modal-footer">
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-success"
           onClick={e => handleSubmit(e)}
           data-bs-dismiss="modal"
         >

@@ -12,24 +12,44 @@ function sendUpdatedResults(req, res) {
     .catch(err => res.status(500).send(err));
 }
 
+function sendUpdatedDetails(req, res) {
+  db("SELECT * FROM hotels;")
+    .then(results => {
+      res.send(results.data);
+    })
+    .catch(err => res.status(500).send(err));
+}
+
 router.get("/trips", (req, res) => {
   // Send back the full list of items
   sendUpdatedResults(req, res);
 });
 
+/* SELECT a.*, b.*, a.id AS authorId, b.id AS bookId
+FROM authors AS a
+LEFT JOIN books_authors AS ba ON a.id = ba.authorId
+LEFT JOIN books AS b ON ba.bookId = b.id
+WHERE a.id = ${author.id}
+`;*/
+
 router.get("/trips/:id", (req, res) => {
-  db(`SELECT * FROM trips WHERE id = ${req.params.id};`)
+  db(
+    `SELECT t.*, h.*, t.id AS tripID, h.id AS hotelID FROM trips AS t LEFT JOIN hotels as h ON t.id = h.trip_id WHERE t.id = ${req.params.id};`
+  )
     .then(results => {
-      res.send(results.data[0]);
+      console.log(results);
+      res.send(makeUsefulFormat(results.data));
     })
     .catch(err => res.status(500).send(err));
 });
 
 router.post("/trips", (req, res) => {
   let { location, from_date, to_date, img, withwho, description } = req.body;
-  db(
-    `INSERT INTO trips (location, from_date, to_date, img, withwho, description) VALUE ("${location}", "${from_date}","${to_date}","${img}", "${withwho}", "${description}");`
-  )
+  let SQL = `INSERT INTO trips (location, from_date, to_date, img, withwho, description) VALUE ("${location}", "${from_date}","${to_date}","${img}", "${withwho}", "${description}");`;
+  if (from_date === "")
+    SQL = `INSERT INTO trips (location, img, withwho, description) VALUE ("${location}","${img}", "${withwho}", "${description}");`;
+
+  db(SQL)
     .then(results => {
       sendUpdatedResults(req, res);
     })
@@ -52,5 +72,51 @@ router.delete("/trips/:id", (req, res) => {
     })
     .catch(err => res.status(500).send(err));
 });
+
+router.post("/trips/:id/hotels", (req, res) => {
+  let trip_id = Number(req.params.id);
+  let { name, url, price } = req.body;
+  db(
+    `INSERT INTO hotels (name, url, price, trip_id) VALUES ("${name}", "${url}", ${price}, ${trip_id} );`
+  )
+    .then(results => {
+      sendUpdatedDetails(req, res);
+    })
+    .catch(err => res.status(500).send(err)); //
+});
+
+router.delete("/trips/hotels/:id", (req, res) => {
+  // URL params are available in req.params
+  db(`DELETE FROM hotels WHERE id = ${req.params.id};`)
+    .then(results => {
+      sendUpdatedDetails(req, res);
+    })
+    .catch(err => res.status(500).send(err));
+});
+
+//*** HELPER FUNCTION */
+
+function makeUsefulFormat(sqldata) {
+  // Create array of details objs
+  let details = sqldata.map(item => ({
+    id: item.hotelID,
+    name: item.name,
+    url: item.url,
+    price: item.price
+  }));
+  if (!details[0].id) details = [];
+
+  // Create customer obj from first array item
+  let item0 = sqldata[0];
+  let trip = {
+    id: item0.tripID,
+    location: item0.location,
+    withwho: item0.withwho,
+    description: item0.description,
+    details
+  };
+
+  return trip;
+}
 
 module.exports = router;

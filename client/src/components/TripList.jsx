@@ -1,19 +1,41 @@
+import React from "react";
 import "../App.css";
 import Form from "./Form";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import moment from "moment";
+import formatDate from "../utilities/utilities";
+import Timeline from "./Timeline";
+//TODO: unify icons used, all from same source
+//TODO: mark some as confirmed and the rest as potential or "ideas"
 
-const icons = {
-  noah: "family_restroom",
-  ae: "favorite",
-  alone: "hiking",
-  niki: "sports_bar",
-  other: "face_2"
+const tagColor = {
+  family: "coral",
+  ae: "turquoise",
+  girls: "green",
+  other: "grey"
 };
 
-export default function TripList({ trips, updateTripStateCb }) {
+export default function TripList() {
   const navigate = useNavigate();
+  let [trips, setTrips] = useState([]);
+
+  useEffect(() => {
+    getMyTrips();
+  }, []);
+
+  const getMyTrips = () => {
+    fetch("/api/trips")
+      .then(res => res.json())
+      .then(data => {
+        // upon success, update tasks
+        setTrips(data);
+        console.log(data);
+      })
+      .catch(error => {
+        // upon failure, show error message
+        console.log(error);
+      });
+  };
 
   const deleteTrip = async id => {
     try {
@@ -21,7 +43,7 @@ export default function TripList({ trips, updateTripStateCb }) {
         method: "DELETE"
       });
       let data = await results.json();
-      updateTripStateCb(data);
+      setTrips(data);
     } catch (error) {
       console.log(error);
     }
@@ -33,7 +55,7 @@ export default function TripList({ trips, updateTripStateCb }) {
         method: "PUT"
       });
       let data = await results.json();
-      updateTripStateCb(data);
+      setTrips(data);
     } catch (error) {
       console.log(error);
     }
@@ -45,8 +67,14 @@ export default function TripList({ trips, updateTripStateCb }) {
       <div className="imgGrid">
         {trips
           .filter(trip => !trip.done)
+          .sort(function(a, b) {
+            return (
+              (a.from_date === null) - (b.from_date === null) ||
+              +(a.from_date > b.from_date) ||
+              -(a.from_date < b.from_date)
+            );
+          }) //sort so that trip with no dates comes last
           .map(trip => (
-            //add condition here, if trip done = TRUE then don't show here
             <div className="card" key={trip.id}>
               <img
                 className="card-img-top"
@@ -60,17 +88,17 @@ export default function TripList({ trips, updateTripStateCb }) {
                     trip.location.slice(1)}
                 </h5>
                 <p className="card-text">
-                  {moment(trip.from_date).format("MMM Do")} -{" "}
-                  {moment(trip.to_date).format("MMM Do")}
+                  {trip.from_date
+                    ? formatDate(trip.from_date, trip.to_date)
+                    : "No dates yet"}
                 </p>
-
-                {/* <a href="#" className="btn btn-primary" onClick={()=>deleteTrip(trip.id)}>
-                  Delete
-                </a> */}
                 <div className="icons">
-                  <span className="material-symbols-outlined">
-                    {icons[trip.withwho]}
-                  </span>
+                  <div
+                    className="tags"
+                    style={{ backgroundColor: tagColor[trip.withwho] }}
+                  >
+                    {trip.withwho}
+                  </div>
                   <div className="icons-buttons">
                     <button
                       title="Been there!"
@@ -89,7 +117,6 @@ export default function TripList({ trips, updateTripStateCb }) {
               </div>
             </div>
           ))}
-        {/** this card should be there to open form in modal, for now just show or hide form on top */}
         <div className="card d-flex">
           <div className="card-body align-items-center d-flex justify-content-center">
             <button
@@ -103,32 +130,10 @@ export default function TripList({ trips, updateTripStateCb }) {
         </div>
       </div>
 
-      <div className="mt-5">
-        <h3>Past</h3>
-        <ul className="mt-4 list-group">
-          {trips
-            .filter(trip => trip.done)
-            .map(trip => (
-              <li
-                key={trip.id}
-                className="list-group-item d-flex align-item-center justify-content-between"
-              >
-                <img src={trip.img} alt={trip.location} width="10%" />
-                <div>
-                  <h5 className="flex-grow-1">{trip.location}</h5>
-                  <p>{moment(trip.from_date).format("MMM YYYY")} </p>
-                </div>
-                <span
-                  role="button"
-                  className="material-symbols-outlined"
-                  onClick={() => deleteTrip(trip.id)}
-                >
-                  close
-                </span>
-              </li>
-            ))}
-        </ul>
-      </div>
+      <Timeline
+        pastTrips={trips.filter(trip => trip.done)}
+        deleteTrip={deleteTrip}
+      />
 
       {/*  <!-- Modal --> */}
       <div
@@ -154,7 +159,7 @@ export default function TripList({ trips, updateTripStateCb }) {
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
-            <Form updateTripStateCb={updateTripStateCb} />
+            <Form updateTripStateCb={setTrips} />
           </div>
         </div>
       </div>
@@ -162,3 +167,30 @@ export default function TripList({ trips, updateTripStateCb }) {
     </div>
   );
 }
+
+/* <h3>Past</h3>
+        <ul className="mt-4 list-group">
+          {trips
+            .filter((trip) => trip.done)
+            .map((trip) => (
+              <li
+                key={trip.id}
+                className="list-group-item d-flex align-item-center justify-content-between"
+              >
+                <img src={trip.img} alt={trip.location} width="10%" />
+                <div>
+                  <h5 className="flex-grow-1">{trip.location}</h5>
+                  <p>{trip.from_date
+                    ? formatDate(trip.from_date, trip.to_date)
+                    : "No dates given"} </p>
+                </div>
+                <span
+                  role="button"
+                  className="material-symbols-outlined"
+                  onClick={() => deleteTrip(trip.id)}
+                >
+                  close
+                </span>
+              </li>
+            ))}
+        </ul> */

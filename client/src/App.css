@@ -15,6 +15,12 @@ h1 {
   object-fit: cover;
 }
 
+.card-img-top-small {
+  width: 100%;
+  height: 10vh;
+  object-fit: cover;
+}
+
 .icons {
   display: flex;
   justify-content: space-between;
@@ -28,4 +34,10 @@ h1 {
 
 .icons button {
   margin-left: 5px;
+}
+
+.tags {
+  color: white;
+  padding: 0 10px;
+  border-radius: 7px;
 }

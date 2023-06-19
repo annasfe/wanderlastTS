@@ -1,1 +1,1 @@
-# Wanderlust - My dream trips
+# Wanderlust - My travel life
