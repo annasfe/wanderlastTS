@@ -14,7 +14,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // Serve static files from the React frontend app
-app.use(express.static(path.join(__dirname, "client/build")));
+app.use(express.static(path.join(__dirname, "client/dist")));
 
 app.get("/", function(req, res, next) {
   res.send("Access the API at path /api");
@@ -24,7 +24,7 @@ app.use("/api", tripsRouter);
 
 // Anything that doesn't match the above, send back index.html
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname + "/client/build/index.html"));
+  res.sendFile(path.join(__dirname + "/client/dist/index.html"));
 });
 
 // catch 404 and forward to error handler
