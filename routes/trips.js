@@ -106,6 +106,8 @@ function makeUsefulFormat(sqldata) {
     location: item0.location,
     withwho: item0.withwho,
     description: item0.description,
+    from_date: item0.from_date,
+    to_date: item0.to_date,
     details
   };
 
