@@ -21,8 +21,8 @@ con.connect(function(err) {
   if (err) throw err;
   console.log("Connected!");
 
-  let altersql = `ALTER USER '${DB_USER}'@'${DB_HOST}' IDENTIFIED WITH mysql_native_password BY '${DB_PASS}';`;
-  let sql = altersql + fs.readFileSync(__dirname + "/init_db.sql").toString();
+  //let altersql = `ALTER USER '${DB_USER}'@'${DB_HOST}' IDENTIFIED WITH mysql_native_password BY '${DB_PASS}';`;
+  let sql = fs.readFileSync(__dirname + "/init_db.sql").toString();
 
   con.query(sql, function(err, result) {
     if (err) throw err;
