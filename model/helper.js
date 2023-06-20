@@ -47,17 +47,17 @@ module.exports = async function db(query) {
           // push the result (which should be an OkPacket) to data
           // germinal - removed next line because it returns an array in an array when empty set
           // results.data.push(result);
-        } else {
-          result.forEach(row => results.data.push(row));
-        }
-        /*else if (result[0].constructor.name == "RowDataPacket") {
+        } else if (result[0].constructor.name == "RowDataPacket") {
           // push each row (RowDataPacket) to data
           result.forEach(row => results.data.push(row));
         } else if (result[0].constructor.name == "OkPacket") {
           // push the first item in result list to data (this accounts for situations
           // such as when the query ends with SELECT LAST_INSERT_ID() and returns an insertId)
           results.data.push(result[0]);
-        }*/
+        } else {
+          //for mysql2 data structure
+          result.forEach(row => results.data.push(row));
+        }
 
         con.end();
         resolve(results);
