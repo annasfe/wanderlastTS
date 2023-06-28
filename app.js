@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, "client/dist")));
 app.get("/", function(req, res, next) {
   res.send("Access the API at path /api");
 });
-//force push to git
+
 app.use("/api", tripsRouter);
 
 // Anything that doesn't match the above, send back index.html
