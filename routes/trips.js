@@ -13,7 +13,7 @@ function sendUpdatedResults(req, res) {
 }
 
 function sendUpdatedDetails(req, res) {
-  db("SELECT * FROM hotels;")
+  db(`SELECT * FROM hotels WHERE trip_id = ${req.params.id};`)
     .then(results => {
       res.send(results.data);
     })
@@ -27,7 +27,7 @@ router.get("/trips", (req, res) => {
 
 router.get("/trips/:id", (req, res) => {
   db(
-    `SELECT t.*, h.*, t.id AS tripID, h.id AS hotelID FROM trips AS t LEFT JOIN hotels as h ON t.id = h.trip_id WHERE t.id = ${req.params.id};`
+    `SELECT t.*, h.*, t.id AS tripID, h.id AS hotelID FROM trips AS t LEFT JOIN hotels AS h ON t.id = h.trip_id WHERE t.id = ${req.params.id};`
   )
     .then(results => {
       console.log(results);
@@ -38,9 +38,9 @@ router.get("/trips/:id", (req, res) => {
 
 router.post("/trips", (req, res) => {
   let { location, from_date, to_date, img, withwho, description } = req.body;
-  let SQL = `INSERT INTO trips (location, from_date, to_date, img, withwho, description) VALUE ("${location}", "${from_date}","${to_date}","${img}", "${withwho}", "${description}");`;
+  let SQL = `INSERT INTO trips (location, from_date, to_date, img, withwho, description) VALUES ("${location}", "${from_date}","${to_date}","${img}", "${withwho}", "${description}");`;
   if (from_date === "")
-    SQL = `INSERT INTO trips (location, img, withwho, description) VALUE ("${location}","${img}", "${withwho}", "${description}");`;
+    SQL = `INSERT INTO trips (location, img, withwho, description) VALUES ("${location}","${img}", "${withwho}", "${description}");`;
 
   db(SQL)
     .then(results => {

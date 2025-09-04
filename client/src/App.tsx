@@ -4,7 +4,7 @@ import TripList from "./components/TripList";
 import TripDetails from "./components/TripDetails";
 import { Routes, Route } from "react-router-dom";
 
-export default function App() {
+export default function App(): JSX.Element {
   return (
     <Routes>
       <Route path="/" element={<Layout />}>
