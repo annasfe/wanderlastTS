@@ -1,7 +1,7 @@
 {
-  "name": "fullstackapp",
+  "name": "wanderlust-fullstackapp",
   "version": "1.0.0",
-  "author": "Krista Moroder & Germinal Camps for CodeOp",
+  "author": "Anna Sfairopoulou for CodeOp",
   "license": "Proprietary",
   "private": true,
   "scripts": {
